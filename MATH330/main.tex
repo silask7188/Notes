@@ -1,0 +1,49 @@
+\documentclass[11pt, oneside]{report}
+
+\input{preamble.tex}
+\input{macros.tex}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Huge \bfseries \textcolor{primary}{\CourseCode}} \\[0.5cm]
+    {\huge \bfseries \CourseTitle} \\[1.5cm]
+    
+    \rule{\linewidth}{1.5pt} \\[1.5cm]
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft} \large
+            \textbf{Author / Student:}\\
+            \Author \\
+            \Institution
+        \end{flushleft}
+    \end{minipage}
+    ~
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright} \large
+            \ifdefempty{\Instructor}{}{%
+                \textbf{Instructor:}\\
+                \Instructor \\[0.2cm]
+            }%
+            \textbf{Term:}\\
+            \Term
+        \end{flushright}
+    \end{minipage}
+    
+    \vfill
+    
+    {\large Last Updated: \today}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\cleardoublepage
+
+\pagenumbering{arabic}
+
+\input{chapters/_chapters.tex}
+
+\end{document}

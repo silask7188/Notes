@@ -1,0 +1,148 @@
+\usepackage[utf8]{inputenc}
+
+\input{config.tex}
+
+\usepackage[\PaperSize, margin=\MarginSize, twoside=false]{geometry}
+
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{bm}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[expansion=false]{microtype}
+\usepackage{etoolbox}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{cd, positioning, arrows.meta}
+
+\usepackage{hyperref}
+\usepackage{bookmark}
+
+\definecolor{primary}{RGB}{30, 58, 138}
+\definecolor{thmcolor}{RGB}{37, 99, 235}
+\definecolor{defcolor}{RGB}{13, 148, 136}
+\definecolor{lemmacolor}{RGB}{124, 58, 237}
+\definecolor{propcolor}{RGB}{2, 132, 199}
+\definecolor{corcolor}{RGB}{79, 70, 229}
+\definecolor{excolor}{RGB}{217, 119, 6}
+\definecolor{remcolor}{RGB}{71, 85, 105}
+\definecolor{probcolor}{RGB}{225, 29, 72}
+\definecolor{proofcolor}{RGB}{51, 65, 85}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=primary,
+  urlcolor=primary,
+  plainpages=false,
+  pdftitle={\CourseCode\ - \CourseTitle},
+  pdfauthor={\Author}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\small\bfseries\textcolor{primary}{\CourseCode}}
+\fancyhead[R]{\small\textcolor{gray!80!black}{\leftmark}}
+\fancyfoot[L]{\small\textcolor{gray}{\Institution\ -- \Term}}
+\fancyfoot[R]{\small\textcolor{gray}{Page \thepage\ of \pageref{LastPage}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+
+\usepackage[many]{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\tcbset{
+  mathboxstyle/.style={
+    enhanced,
+    breakable,
+    boxrule=0.8pt,
+    arc=3pt,
+    top=6pt, bottom=6pt, left=8pt, right=8pt,
+    fonttitle=\bfseries,
+    coltitle=white
+  }
+}
+
+\newtcolorbox[auto counter, number within=chapter]{definition}[1][]{
+  mathboxstyle,
+  colback=defcolor!4!white,
+  colframe=defcolor!90!black,
+  title={Definition \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{theorem}[1][]{
+  mathboxstyle,
+  colback=thmcolor!4!white,
+  colframe=thmcolor!85!black,
+  title={Theorem \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{lemma}[1][]{
+  mathboxstyle,
+  colback=lemmacolor!4!white,
+  colframe=lemmacolor!85!black,
+  title={Lemma \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{proposition}[1][]{
+  mathboxstyle,
+  colback=propcolor!4!white,
+  colframe=propcolor!85!black,
+  title={Proposition \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{corollary}[1][]{
+  mathboxstyle,
+  colback=corcolor!4!white,
+  colframe=corcolor!85!black,
+  title={Corollary \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{example}[1][]{
+  mathboxstyle,
+  colback=excolor!4!white,
+  colframe=excolor!85!black,
+  title={Example \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox[auto counter, number within=chapter]{exercise}[1][]{
+  mathboxstyle,
+  colback=probcolor!4!white,
+  colframe=probcolor!85!black,
+  title={Exercise \thechapter.\tcbcounter\ifstrempty{#1}{}{: #1}}
+}
+
+\newtcolorbox{remark}[1][Remark]{
+  enhanced,
+  breakable,
+  frame hidden,
+  borderline west={2.5pt}{0pt}{remcolor!80!black},
+  colback=remcolor!6!white,
+  arc=0pt,
+  top=4pt, bottom=4pt, left=8pt, right=8pt,
+  title={\bfseries\textcolor{remcolor!90!black}{#1}},
+  attach title to upper={\ },
+  coltitle=remcolor!90!black
+}
+
+\renewenvironment{proof}[1][Proof]{
+  \par\vspace{6pt}\noindent
+  {\bfseries\textcolor{proofcolor!90!black}{#1.}}\quad
+}{
+  \hfill$\blacksquare$\par\vspace{6pt}
+}
+
+\newenvironment{solution}[1][Solution]{
+  \par\vspace{6pt}\noindent
+  {\bfseries\textcolor{defcolor!90!black}{#1.}}\quad
+}{
+  \hfill$\square$\par\vspace{6pt}
+}

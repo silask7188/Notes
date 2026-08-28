@@ -1,0 +1,346 @@
+\chapter{Vectors and Matrices}
+
+\section{Euclidean Vectors and Linear Combinations}
+
+A \textbf{vector} in $\R^n$ is an ordered list of $n$ real numbers. Geometrically, a vector represents a directed line segment possessing both magnitude and direction. Algebraically, it is represented as a column matrix.
+
+\begin{definition}[Euclidean Vector Space $\R^n$]
+    For a positive integer $n$, the set of all $n$-tuples of real numbers is called \textbf{$n$-dimensional Euclidean space}, denoted by $\R^n$:
+    \[
+        \R^n = \set{\vct{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}}{v_1, v_2, \dots, v_n \in \R}
+    \]
+    The real numbers $v_1, v_2, \dots, v_n$ are called the \textbf{components} (or coordinates) of the vector $\vct{v}$.
+\end{definition}
+
+\subsection*{Operations on Vectors}
+The algebraic structure of $\R^n$ is established by two fundamental operations: \textbf{vector addition} and \textbf{scalar multiplication}.
+
+\begin{definition}[Vector Addition]
+    Let $\vct{u}, \vct{v} \in \R^n$ be vectors given by:
+    \[
+        \vct{u} = \begin{pmatrix} u_1 \\ u_2 \\ \vdots \\ u_n \end{pmatrix}, \quad 
+        \vct{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}
+    \]
+    The \textbf{sum} $\vct{u} + \vct{v}$ is the vector in $\R^n$ obtained by adding corresponding components:
+    \[
+        \vct{u} + \vct{v} = \begin{pmatrix} u_1 + v_1 \\ u_2 + v_2 \\ \vdots \\ u_n + v_n \end{pmatrix}
+    \]
+\end{definition}
+
+\begin{example}[Vector Addition]
+    Let $\vct{u} = \begin{pmatrix} 2 \\ 1 \end{pmatrix}$ and $\vct{v} = \begin{pmatrix} 4 \\ 3 \end{pmatrix}$ in $\R^2$. Their sum is:
+    \[
+        \vct{u} + \vct{v} = \begin{pmatrix} 2 \\ 1 \end{pmatrix} + \begin{pmatrix} 4 \\ 3 \end{pmatrix} = \begin{pmatrix} 2 + 4 \\ 1 + 3 \end{pmatrix} = \begin{pmatrix} 6 \\ 4 \end{pmatrix}
+    \]
+\end{example}
+
+\begin{definition}[Scalar Multiplication]
+    Let $\vct{v} \in \R^n$ and let $c \in \R$ be a real number (called a \textbf{scalar}). The \textbf{scalar product} $c\vct{v}$ is obtained by multiplying each component of $\vct{v}$ by $c$:
+    \[
+        c\vct{v} = c\begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix} = \begin{pmatrix} c v_1 \\ c v_2 \\ \vdots \\ c v_n \end{pmatrix}
+    \]
+\end{definition}
+
+\begin{example}[Scalar Multiplication]
+    Let $c = -3$ and $\vct{v} = \begin{pmatrix} 1 \\ -2 \\ 5 \end{pmatrix} \in \R^3$. Then:
+    \[
+        c\vct{v} = -3 \begin{pmatrix} 1 \\ -2 \\ 5 \end{pmatrix} = \begin{pmatrix} (-3)(1) \\ (-3)(-2) \\ (-3)(5) \end{pmatrix} = \begin{pmatrix} -3 \\ 6 \\ -15 \end{pmatrix}
+    \]
+\end{example}
+
+\begin{theorem}[Algebraic Properties of $\R^n$]
+    For all vectors $\vct{u}, \vct{v}, \vct{w} \in \R^n$ and all scalars $c, d \in \R$, vector addition and scalar multiplication satisfy the following properties:
+    \begin{enumerate}[label=\roman*.]
+        \item \textbf{Commutativity of Addition:} $\vct{u} + \vct{v} = \vct{v} + \vct{u}$
+        \item \textbf{Associativity of Addition:} $(\vct{u} + \vct{v}) + \vct{w} = \vct{u} + (\vct{v} + \vct{w})$
+        \item \textbf{Additive Identity:} There exists a zero vector $\vct{0} = \begin{pmatrix} 0 & 0 & \dots & 0 \end{pmatrix}\T \in \R^n$ such that $\vct{v} + \vct{0} = \vct{v}$
+        \item \textbf{Additive Inverse:} For each $\vct{v} \in \R^n$, there exists a vector $-\vct{v} = (-1)\vct{v}$ such that $\vct{v} + (-\vct{v}) = \vct{0}$
+        \item \textbf{Distributivity over Vector Addition:} $c(\vct{u} + \vct{v}) = c\vct{u} + c\vct{v}$
+        \item \textbf{Distributivity over Scalar Addition:} $(c + d)\vct{v} = c\vct{v} + d\vct{v}$
+        \item \textbf{Associativity of Scalar Multiplication:} $c(d\vct{v}) = (cd)\vct{v}$
+        \item \textbf{Scalar Identity:} $1\vct{v} = \vct{v}$
+    \end{enumerate}
+\end{theorem}
+
+\subsection{Linear Combinations and Span}
+
+\begin{definition}[Linear Combination]
+    Let $\vct{v}_1, \vct{v}_2, \dots, \vct{v}_k \in \R^n$ be vectors and $c_1, c_2, \dots, c_k \in \R$ be scalars. A vector $\vct{w} \in \R^n$ given by
+    \[
+        \vct{w} = c_1 \vct{v}_1 + c_2 \vct{v}_2 + \dots + c_k \vct{v}_k = \sum_{i=1}^k c_i \vct{v}_i
+    \]
+    is called a \textbf{linear combination} of the vectors $\vct{v}_1, \vct{v}_2, \dots, \vct{v}_k$ with weights $c_1, c_2, \dots, c_k$.
+\end{definition}
+
+% \begin{definition}[Span]
+%    The \textbf{span} of a set of vectors $\set{\vct{v}_1, \vct{v}_2, \dots, \vct{v}_k} \subset \R^n$, denoted $\spn\{\vct{v}_1, \dots, \vct{v}_k\}$, is the set of all possible linear combinations of those vectors:
+%    \[
+%        \spn\{\vct{v}_1, \dots, \vct{v}_k\} = \set{c_1 \vct{v}_1 + c_2 \vct{v}_2 + \dots + c_k \vct{v}_k}{c_1, \dots, c_k \in \R}
+%    \]
+%\end{definition}
+
+G%eometrically, the span of a single non-zero vector in $\R^n$ represents a line passing through the origin. The span of two non-collinear vectors in $\R^3$ forms a plane passing through the origin.
+
+\begin{exercise}
+    Find $c, d \in \R$ such that
+    \[
+        c \begin{pmatrix} 2 \\ 1 \end{pmatrix} + d \begin{pmatrix} 2 \\ -1 \end{pmatrix} = \begin{pmatrix} 8 \\ 2 \end{pmatrix}
+    \]
+\end{exercise}
+
+\begin{solution}
+    Expanding the linear combination into component equations:
+    \begin{align*}
+        c \begin{pmatrix} 2 \\ 1 \end{pmatrix} + d \begin{pmatrix} 2 \\ -1 \end{pmatrix} &= \begin{pmatrix} 8 \\ 2 \end{pmatrix} \\ 
+        \begin{pmatrix} 2c \\ c \end{pmatrix} + \begin{pmatrix} 2d \\ -d \end{pmatrix} &= \begin{pmatrix} 8 \\ 2 \end{pmatrix} \\ 
+        \begin{pmatrix} 2c + 2d \\ c - d \end{pmatrix} &= \begin{pmatrix} 8 \\ 2 \end{pmatrix}
+    \end{align*}
+    This results in the linear system:
+    \begin{align*}
+        2c + 2d &= 8 \\ 
+        c - d &= 2 
+    \end{align*}
+    Adding the second equation multiplied by $2$ to the first gives $4c = 12$, so $c = 3$. Substituting $c = 3$ into $c - d = 2$ yields $3 - d = 2 \implies d = 1$.
+\end{solution}
+\newpage 
+%--------------------- 
+\begin{exercise}[Describing All Linear Combinations]
+    Describe all linear combinations of:
+    \begin{enumerate}[label=\arabic*.]
+        \item $\vct{a} = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix}, \quad \vct{b} = \begin{pmatrix} 3 \\ 6 \\ 9 \end{pmatrix}$
+        \item $\vct{a} = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}, \quad \vct{b} = \begin{pmatrix} 0 \\ 2 \\ 3 \end{pmatrix}$
+    \end{enumerate}   
+\end{exercise}
+
+\begin{solution}
+    \begin{enumerate}[label=\arabic*.]
+        \item Since $\vct{b} = 3\vct{a}$, the vectors $\vct{a}$ and $\vct{b}$ are collinear. Any linear combination $c\vct{a} + d\vct{b} = (c + 3d)\vct{a}$ is a scalar multiple of $\vct{a}$, which describes all vectors lying on the line through the origin in direction $\begin{pmatrix} 1 & 2 & 3 \end{pmatrix}\T$.
+        \item Since $\vct{a}$ and $\vct{b}$ are not parallel, their linear combinations span a $2$-dimensional plane in $\R^3$ passing through the origin and containing both vectors.
+    \end{enumerate}
+\end{solution}
+
+
+\section{Length and Angles from Dot Product}
+
+The dot product introduces metric geometry into Euclidean space $\R^n$, enabling the measurement of lengths, distances, and angles.
+
+\begin{definition}[Dot Product]
+    Let $\vct{a}, \vct{b} \in \R^n$. The \textbf{dot product} (or \textbf{Euclidean inner product}) $\vct{a} \cdot \vct{b}$ is the scalar defined by:
+    \[
+        \vct{a} \cdot \vct{b} \coloneqq \vct{a}\T \vct{b} = \sum_{i=1}^{n} a_i b_i = a_1 b_1 + a_2 b_2 + \dots + a_n b_n \in \R
+    \]
+\end{definition}
+
+\begin{theorem}[Properties of the Dot Product]
+    For all vectors $\vct{a}, \vct{b}, \vct{c} \in \R^n$ and any scalar $k \in \R$:
+    \begin{enumerate}[label=\roman*.]
+        \item \textbf{Symmetry:} $\vct{a} \cdot \vct{b} = \vct{b} \cdot \vct{a}$
+        \item \textbf{Distributivity:} $(\vct{a} + \vct{b}) \cdot \vct{c} = \vct{a} \cdot \vct{c} + \vct{b} \cdot \vct{c}$
+        \item \textbf{Homogeneity:} $(k\vct{a}) \cdot \vct{b} = k(\vct{a} \cdot \vct{b})$
+        \item \textbf{Positive Definiteness:} $\vct{a} \cdot \vct{a} \ge 0$, with $\vct{a} \cdot \vct{a} = 0$ if and only if $\vct{a} = \vct{0}$.
+    \end{enumerate}
+\end{theorem}
+
+\subsection{Vector Length and Norm}
+
+\begin{definition}[Length / Norm]
+    Let $\vct{a} \in \R^n$. The \textbf{length} (or \textbf{Euclidean norm}) of $\vct{a}$, denoted $\norm{\vct{a}}$, is:
+    \[
+        \norm{\vct{a}} \coloneqq \sqrt{\vct{a} \cdot \vct{a}} = \sqrt{a_1^2 + a_2^2 + \dots + a_n^2}
+    \]
+    Note that $\norm{\vct{a}}^2 = \vct{a} \cdot \vct{a}$.
+\end{definition}
+
+\begin{definition}[Unit Vector]
+    A vector $\vct{u} \in \R^n$ is called a \textbf{unit vector} if $\norm{\vct{u}} = 1$.
+    
+    Given any non-zero vector $\vct{v} \in \R^n$, dividing by its length yields a unit vector $\vct{u} = \frac{\vct{v}}{\norm{\vct{v}}}$ in the direction of $\vct{v}$ (a process called \textbf{normalization}).
+    
+    In $\R^2$, any unit vector extending from the origin to the unit circle can be parameterized by an angle $\theta$ as:
+    \[
+        \vct{u} = \begin{pmatrix} \cos\theta \\ \sin\theta \end{pmatrix}
+    \]
+\end{definition}
+
+\subsection{Orthogonality and Angles}
+
+\begin{definition}[Orthogonal Vectors]
+    Two vectors $\vct{a}, \vct{b} \in \R^n$ are \textbf{orthogonal} (denoted $\vct{a} \perp \vct{b}$) if their dot product is zero:
+    \[
+        \vct{a} \cdot \vct{b} = 0
+    \]
+\end{definition}
+
+\begin{remark}[Orthogonal vs. Perpendicular]
+    The terms `orthogonal' and `perpendicular' have the same geometric idea. However, `orthogonal' applies to vectors (and includes the zero vector $\vct{0}$, which is orthogonal to every vector), while `perpendicular' is usually for geometric lines and planes.
+\end{remark}
+
+\begin{example}[Pythagorean Theorem for Vectors]
+    Let $\vct{a}, \vct{b} \in \R^n$ be orthogonal vectors ($\vct{a} \cdot \vct{b} = 0$). Then:
+    \[
+        \norm{\vct{a} + \vct{b}}^2 = \norm{\vct{a}}^2 + \norm{\vct{b}}^2
+    \]
+    \begin{proof}
+        Expanding the squared norm using dot product properties:
+        \begin{align*}
+            \norm{\vct{a} + \vct{b}}^2 &= (\vct{a} + \vct{b}) \cdot (\vct{a} + \vct{b}) \\
+            &= \vct{a} \cdot \vct{a} + 2(\vct{a} \cdot \vct{b}) + \vct{b} \cdot \vct{b} \\ 
+            &= \norm{\vct{a}}^2 + 0 + \norm{\vct{b}}^2 \\ 
+            &= \norm{\vct{a}}^2 + \norm{\vct{b}}^2
+        \end{align*}
+    \end{proof}
+\end{example}
+
+\begin{exercise}[Dot Product]
+    Let $\vct{a} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}$ and $\vct{b} = \begin{pmatrix} -1 \\ 2 \end{pmatrix}$. Find $\vct{a} \cdot \vct{b}$.
+\end{exercise}
+
+\begin{solution}
+    Calculating the dot product:
+    \begin{align*}
+        \vct{a} \cdot \vct{b} &= (4)(-1) + (2)(2) = -4 + 4 = 0
+    \end{align*}
+    Since $\vct{a} \cdot \vct{b} = 0$, the vectors $\vct{a}$ and $\vct{b}$ are orthogonal.
+\end{solution}
+
+\begin{definition}[Angle between Vectors]
+    For non-zero vectors $\vct{a}, \vct{b} \in \R^n$, the \textbf{angle} $\alpha \in [0, \pi]$ between $\vct{a}$ and $\vct{b}$ satisfies:
+    \[
+        \cos\alpha = \frac{\vct{a} \cdot \vct{b}}{\norm{\vct{a}}\norm{\vct{b}}}
+    \]
+    $\vct{a} \cdot \vct{b} = \norm{\vct{a}}\norm{\vct{b}}\cos\alpha$.
+\end{definition}
+
+\begin{theorem}[Vector Inequalities]
+    For any vectors $\vct{a}, \vct{b} \in \R^n$:
+    \begin{enumerate}[label=\arabic*.]
+        \item \textbf{Cauchy-Schwarz Inequality:}
+            \[
+                \abs{\vct{a} \cdot \vct{b}} \le \norm{\vct{a}}\norm{\vct{b}}
+            \]
+            Equality holds if and only if $\vct{a}$ and $\vct{b}$ are linearly dependent (collinear).
+            
+        \item \textbf{Triangle Inequality:}
+            \[
+                \norm{\vct{a} + \vct{b}} \le \norm{\vct{a}} + \norm{\vct{b}}
+            \]
+            Equality holds if and only if one vector is a non-negative scalar multiple of the other.
+    \end{enumerate}
+\end{theorem}
+
+% \begin{definition}[Orthogonal Projection]
+ %   Let $\vct{a}, \vct{u} \in \R^n$ with $\vct{u} \neq \vct{0}$. The \textbf{orthogonal projection} of $\vct{a}$ onto $\vct{u}$, denoted $\proj_{\vct{u}}(\vct{a})$, is the vector parallel to $\vct{u}$ given by:
+%    \[
+%        \proj_{\vct{u}}(\vct{a}) = \left(\frac{\vct{a} \cdot \vct{u}}{\norm{\vct{u}}^2}\right) \vct{u}
+%    \]
+%\end{definition}
+
+
+\newpage
+\section{Intro to Matrices and Column Spaces}
+
+Matrices provide a structured representation for systems of linear equations, linear transformations, and collections of vectors.
+
+\begin{definition}[Matrix]
+    An $m \times n$ \textbf{matrix} $A$ is a rectangular array of real numbers formatted with $m$ rows and $n$ columns:
+    \[
+        A = \begin{pmatrix}
+            a_{11} & a_{12} & \dots & a_{1n} \\
+            a_{21} & a_{22} & \dots & a_{2n} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            a_{m1} & a_{m2} & \dots & a_{mn}
+        \end{pmatrix} = [a_{ij}]_{m \times n}
+    \]
+    Expressed in terms of its column vectors $\vct{a}_1, \vct{a}_2, \dots, \vct{a}_n \in \R^m$, $A$ is written as:
+    \[
+        A = \begin{pmatrix} \vct{a}_1 & \vct{a}_2 & \dots & \vct{a}_n \end{pmatrix}
+    \]
+\end{definition}
+
+\subsection{Special Types of Matrices}
+
+Matrices possess structural classifications according to their dimensions and internal symmetry.
+
+\begin{definition}[Matrix Classifications]
+    Let $A = [a_{ij}]$ be a matrix.
+    \begin{itemize}
+        \item \textbf{Square Matrix:} A matrix with equal numbers of rows and columns ($m = n$).
+        \item \textbf{Symmetric Matrix:} A square matrix satisfying $A = A\T$, meaning $a_{ij} = a_{ji}$ for all $i, j$.
+        \item \textbf{Diagonal Matrix:} A square matrix where all off-diagonal entries are zero ($a_{ij} = 0$ for all $i \neq j$).
+        \item \textbf{Identity Matrix ($I_n$):} A diagonal matrix with ones on the main diagonal ($a_{ii} = 1$) and zeros elsewhere.
+        \item \textbf{Triangular Matrices:}
+            \begin{itemize}
+                \item \textbf{Upper Triangular Matrix:} A square matrix with zeros below the main diagonal ($a_{ij} = 0$ for $i > j$).
+                \item \textbf{Lower Triangular Matrix:} A square matrix with zeros above the main diagonal ($a_{ij} = 0$ for $i < j$).
+            \end{itemize}
+    \end{itemize}
+\end{definition}
+
+\newpage
+\begin{example}[Types of Matrices]
+    \begin{itemize}
+        \item \textbf{3$\times$3 Identity Matrix (Symmetric and Diagonal):}
+            \[
+                I_3 = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}
+            \]
+        \item \textbf{3$\times$3 Diagonal Matrix:}
+            \[
+                D = \begin{pmatrix} 2 & 0 & 0 \\ 0 & 4 & 0 \\ 0 & 0 & 5 \end{pmatrix}
+            \]
+        \item \textbf{Triangular Matrices:}
+            \begin{itemize}
+                \item 2$\times$2 Upper Triangular Matrix:
+                    \[
+                        U = \begin{pmatrix} 1 & 2 \\ 0 & 3 \end{pmatrix}
+                    \]
+                \item 3$\times$3 Lower Triangular Matrix:
+                    \[
+                        L = \begin{pmatrix} 1 & 0 & 0 \\ 2 & 3 & 0 \\ 3 & 1 & 5 \end{pmatrix}
+                    \]
+            \end{itemize}
+    \end{itemize}
+\end{example}
+
+\subsection{Matrix-Vector Product}
+
+\begin{definition}[Matrix-Vector Product]
+    Let $A = [a_{ij}]$ be an $m \times n$ matrix with rows $\vct{r}_1\T, \vct{r}_2\T, \dots, \vct{r}_m\T \in \R^n$ and column vectors $\vct{a}_1, \vct{a}_2, \dots, \vct{a}_n \in \R^m$. For a vector $\vct{x} = \begin{pmatrix} x_1 & x_2 & \dots & x_n \end{pmatrix}\T \in \R^n$, the \textbf{matrix-vector product} $A\vct{x} \in \R^m$ is defined componentwise by:
+    \[
+        A\vct{x} = \begin{pmatrix} \vct{r}_1 \cdot \vct{x} \\ \vct{r}_2 \cdot \vct{x} \\ \vdots \\ \vct{r}_m \cdot \vct{x} \end{pmatrix}
+    \]
+\end{definition}
+
+\begin{remark}[Linear Combination Viewpoint]
+    Equivalently, the product $A\vct{x}$ is a \textbf{linear combination of the column vectors of $A$} with weights given by the entries of $\vct{x}$:
+    \[
+        A\vct{x} = x_1 \vct{a}_1 + x_2 \vct{a}_2 + \dots + x_n \vct{a}_n
+    \]
+    This dual perspective links matrix multiplication directly to linear combinations and vector spans.
+\end{remark}
+
+\begin{exercise}[Matrix-Vector Product]
+    Let $A = \begin{pmatrix} 1 & 3 \\ 2 & 4 \end{pmatrix}$ and $\vct{h} = \begin{pmatrix} 1 \\ 2 \end{pmatrix}$. Find $A\vct{h}$.
+\end{exercise}
+
+\begin{solution}
+    Using the row dot-product formula:
+    \begin{align*}
+        A\vct{h} &= \begin{pmatrix} \begin{pmatrix} 1 & 3 \end{pmatrix} \cdot \begin{pmatrix} 1 & 2 \end{pmatrix}\T \\[4pt] \begin{pmatrix} 2 & 4 \end{pmatrix} \cdot \begin{pmatrix} 1 & 2 \end{pmatrix}\T \end{pmatrix} \\
+        &= \begin{pmatrix} (1)(1) + (3)(2) \\ (2)(1) + (4)(2) \end{pmatrix} = \begin{pmatrix} 7 \\ 10 \end{pmatrix}
+    \end{align*}
+    Alternatively, using column linear combinations:
+    \[
+        A\vct{h} = 1\begin{pmatrix} 1 \\ 2 \end{pmatrix} + 2\begin{pmatrix} 3 \\ 4 \end{pmatrix} = \begin{pmatrix} 1 \\ 2 \end{pmatrix} + \begin{pmatrix} 6 \\ 8 \end{pmatrix} = \begin{pmatrix} 7 \\ 10 \end{pmatrix}
+    \]
+\end{solution}
+
+\subsection{Column Space of a Matrix}
+
+% \begin{definition}[Column Space]
+%    Let $A$ be an $m \times n$ matrix with column vectors $\vct{a}_1, \vct{a}_2, \dots, \vct{a}_n \in \R^m$. The \textbf{column space} of $A$, denoted $\col(A)$, is the set of all linear combinations of the columns of $A$:
+%    \[
+%        \col(A) \coloneqq \spn\{\vct{a}_1, \vct{a}_2, \dots, \vct{a}_n\} = \set{A\vct{x}}{\vct{x} \in \R^n} \subseteq \R^m
+%    \]
+%\end{definition}
+
+%The column space $\col(A)$ consists of all vectors $\vct{b} \in \R^m$ for which the linear system $A\vct{x} = \vct{b}$ has at least one solution $\vct{x} \in \R^n$.
