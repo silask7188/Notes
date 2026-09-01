@@ -1,4 +1,6 @@
+*.pdf
 # LaTeX auxiliary build files
+
 *.aux
 *.bbl
 *.bcf
