@@ -22,7 +22,6 @@ jobs:
       - name: Find directories containing main.tex
         id: find-dirs
         run: |
-          # Locate directories containing a main.tex file (up to 3 levels deep)
           DIRS=$(find . -maxdepth 3 -name "main.tex" -exec dirname {} \; | sed 's|^\./||' | sort -u | jq -R . | jq -s -c .)
           echo "Discovered LaTeX directories: $DIRS"
           echo "directories=$DIRS" >> $GITHUB_OUTPUT
@@ -64,7 +63,7 @@ jobs:
           retention-days: 1
 
   publish-release:
-    name: Publish GitHub Release
+    name: Publish GitHub Release & Trigger Webhook
     needs: [detect-directories, compile-latex]
     runs-on: ubuntu-latest
     steps:
@@ -92,3 +91,10 @@ jobs:
             Last updated: ${{ env.DATE }}
           files: release_assets/*.pdf
           make_latest: true
+
+      - name: Trigger Webhook Refresh
+        env:
+          URL: ${{ secrets.URL }}
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          curl -X POST "$URL" -H "Authorization: Bearer $TOKEN"

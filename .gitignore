@@ -49,3 +49,9 @@ Desktop.ini
 .idea/
 
 # *.pdf
+
+# Environment files
+.env
+.env.*
+!.env.example
+
