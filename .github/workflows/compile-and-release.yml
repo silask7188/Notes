@@ -69,12 +69,12 @@ jobs:
           root_file: main.tex
           working_directory: ${{ matrix.directory }}
 
-      - name: Format PDF Name and Prepare Asset
+      - name: Format PDF Name with Timestamp and Prepare Asset
         id: prep
         run: |
-          DATE=$(date +'%Y-%m-%d')
+          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           DIR_NAME=$(basename "${{ matrix.directory }}" | tr '[:upper:]' '[:lower:]')
-          OUTPUT_NAME="${DIR_NAME}_${DATE}.pdf"
+          OUTPUT_NAME="${DIR_NAME}_${TIMESTAMP}.pdf"
           
           mkdir -p build_output
           cp "${{ matrix.directory }}/main.pdf" "build_output/${OUTPUT_NAME}"
