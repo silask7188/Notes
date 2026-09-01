@@ -1,0 +1,94 @@
+name: Compile LaTeX & Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  detect-directories:
+    name: Auto-discover LaTeX directories
+    runs-on: ubuntu-latest
+    outputs:
+      directories: ${{ steps.find-dirs.outputs.directories }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find directories containing main.tex
+        id: find-dirs
+        run: |
+          # Locate directories containing a main.tex file (up to 3 levels deep)
+          DIRS=$(find . -maxdepth 3 -name "main.tex" -exec dirname {} \; | sed 's|^\./||' | sort -u | jq -R . | jq -s -c .)
+          echo "Discovered LaTeX directories: $DIRS"
+          echo "directories=$DIRS" >> $GITHUB_OUTPUT
+
+  compile-latex:
+    name: Build ${{ matrix.directory }}
+    needs: detect-directories
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.detect-directories.outputs.directories) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX Document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: ${{ matrix.directory }}
+
+      - name: Format PDF Name and Prepare Asset
+        id: prep
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          DIR_NAME=$(basename "${{ matrix.directory }}" | tr '[:upper:]' '[:lower:]')
+          OUTPUT_NAME="${DIR_NAME}_${DATE}.pdf"
+          
+          mkdir -p build_output
+          cp "${{ matrix.directory }}/main.pdf" "build_output/${OUTPUT_NAME}"
+          echo "filename=${OUTPUT_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-${{ matrix.directory }}
+          path: build_output/*.pdf
+          retention-days: 1
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [detect-directories, compile-latex]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all compiled PDFs
+        uses: actions/download-artifact@v4
+        with:
+          path: release_assets
+          pattern: pdf-*
+          merge-multiple: true
+
+      - name: Get Current Date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Update Latest Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Course Notes (${{ env.DATE }})
+          body: |
+            Automatically compiled LaTeX course notes from branch `main`.
+            
+            Last updated: ${{ env.DATE }}
+          files: release_assets/*.pdf
+          make_latest: true
