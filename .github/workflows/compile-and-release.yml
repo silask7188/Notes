@@ -48,9 +48,9 @@ jobs:
         id: prep
         run: |
           DATE=$(date +'%Y-%m-%d')
+          TIME=$(date +'%H-%M-%S')
           DIR_NAME=$(basename "${{ matrix.directory }}" | tr '[:upper:]' '[:lower:]')
-          OUTPUT_NAME="${DIR_NAME}_${DATE}.pdf"
-          
+          OUTPUT_NAME="${DIR_NAME}_${DATE}_${TIME}.pdf" 
           mkdir -p build_output
           cp "${{ matrix.directory }}/main.pdf" "build_output/${OUTPUT_NAME}"
           echo "filename=${OUTPUT_NAME}" >> $GITHUB_OUTPUT
