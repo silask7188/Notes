@@ -11,24 +11,49 @@ permissions:
 
 jobs:
   detect-directories:
-    name: Auto-discover LaTeX directories
+    name: Auto-discover changed LaTeX directories
     runs-on: ubuntu-latest
     outputs:
       directories: ${{ steps.find-dirs.outputs.directories }}
+      has_changes: ${{ steps.find-dirs.outputs.has_changes }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Find directories containing main.tex
+      - name: Find directories with changes
         id: find-dirs
         run: |
-          DIRS=$(find . -maxdepth 3 -name "main.tex" -exec dirname {} \; | sed 's|^\./||' | sort -u | jq -R . | jq -s -c .)
-          echo "Discovered LaTeX directories: $DIRS"
-          echo "directories=$DIRS" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            DIRS=$(find . -maxdepth 3 -name "main.tex" -exec dirname {} \; | sed 's|^\./||' | sort -u)
+          else
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || git diff --name-only HEAD~1 HEAD)
+            DIRS=""
+            for mainfile in $(find . -maxdepth 3 -name "main.tex"); do
+              dir=$(dirname "$mainfile" | sed 's|^\./||')
+              if echo "$CHANGED_FILES" | grep -q "^${dir}/"; then
+                DIRS="$DIRS $dir"
+              fi
+            done
+          fi
+
+          DIRS_TRIMMED=$(echo "$DIRS" | tr ' ' '\n' | grep -v '^$' | sort -u)
+          if [ -z "$DIRS_TRIMMED" ]; then
+            echo "No LaTeX directories changed."
+            echo "directories=[]" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            JSON_DIRS=$(echo "$DIRS_TRIMMED" | jq -R . | jq -s -c .)
+            echo "Directories to compile: $JSON_DIRS"
+            echo "directories=$JSON_DIRS" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
 
   compile-latex:
     name: Build ${{ matrix.directory }}
     needs: detect-directories
+    if: needs.detect-directories.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -48,9 +73,9 @@ jobs:
         id: prep
         run: |
           DATE=$(date +'%Y-%m-%d')
-          TIME=$(date +'%H-%M-%S')
           DIR_NAME=$(basename "${{ matrix.directory }}" | tr '[:upper:]' '[:lower:]')
-          OUTPUT_NAME="${DIR_NAME}_${DATE}_${TIME}.pdf" 
+          OUTPUT_NAME="${DIR_NAME}_${DATE}.pdf"
+          
           mkdir -p build_output
           cp "${{ matrix.directory }}/main.pdf" "build_output/${OUTPUT_NAME}"
           echo "filename=${OUTPUT_NAME}" >> $GITHUB_OUTPUT
@@ -65,7 +90,10 @@ jobs:
   publish-release:
     name: Publish GitHub Release & Trigger Webhook
     needs: [detect-directories, compile-latex]
+    if: needs.detect-directories.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -79,6 +107,23 @@ jobs:
 
       - name: Get Current Date
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Remove Old Release Assets for Re-compiled Courses
+        run: |
+          if gh release view latest >/dev/null 2>&1; then
+            EXISTING_ASSETS=$(gh release view latest --json assets -q '.assets[].name')
+            for file in release_assets/*.pdf; do
+              [ -e "$file" ] || continue
+              filename=$(basename "$file")
+              prefix=$(echo "$filename" | sed -E 's/_([0-9]{4}-[0-9]{2}-[0-9]{2}).*//')_
+              for old_asset in $EXISTING_ASSETS; do
+                if [[ "$old_asset" == "${prefix}"* ]]; then
+                  echo "Deleting outdated asset: $old_asset"
+                  gh release delete-asset latest "$old_asset" -y || true
+                fi
+              done
+            done
+          fi
 
       - name: Update Latest Release
         uses: softprops/action-gh-release@v2
